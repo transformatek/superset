@@ -177,3 +177,10 @@ Understanding the Superset Points of View
   - [Why Apache Superset is Betting on Apache ECharts](https://preset.io/blog/2021-4-1-why-echarts/)
 
 - [Superset API](https://superset.apache.org/docs/rest-api)
+
+## Useful links
+- https://medium.com/@khushbu.adav/embedding-superset-dashboards-in-your-react-application-7f282e3dbd88
+- https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/
+- https://superset.apache.org/docs/databases/sql-server
+- https://github.com/pymssql/pymssql
+

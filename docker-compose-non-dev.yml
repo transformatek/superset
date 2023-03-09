@@ -15,11 +15,13 @@
 # limitations under the License.
 #
 x-superset-image: &superset-image apache/superset:${TAG:-latest-dev}
-x-superset-depends-on: &superset-depends-on
+x-superset-depends-on:
+  &superset-depends-on
   - db
   - redis
-x-superset-volumes: &superset-volumes
+x-superset-volumes:
   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+  &superset-volumes
   - ./docker:/app/docker
   - superset_home:/app/superset_home
 
@@ -44,7 +46,13 @@ services:
     env_file: docker/.env-non-dev
     image: *superset-image
     container_name: superset_app
-    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
+    command:
+      [
+        # "/usr/local/bin/pip install pymssql",
+      # "&&",
+        "/app/docker/docker-bootstrap.sh",
+        "app-gunicorn"
+      ]
     user: "root"
     restart: unless-stopped
     ports:
@@ -55,7 +63,7 @@ services:
   superset-init:
     image: *superset-image
     container_name: superset_init
-    command: ["/app/docker/docker-init.sh"]
+    command: [ "/app/docker/docker-init.sh" ]
     env_file: docker/.env-non-dev
     depends_on: *superset-depends-on
     user: "root"
@@ -66,19 +74,23 @@ services:
   superset-worker:
     image: *superset-image
     container_name: superset_worker
-    command: ["/app/docker/docker-bootstrap.sh", "worker"]
+    command: [ "/app/docker/docker-bootstrap.sh", "worker" ]
     env_file: docker/.env-non-dev
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
     volumes: *superset-volumes
     healthcheck:
-      test: ["CMD-SHELL", "celery inspect ping -A superset.tasks.celery_app:app -d celery@$$HOSTNAME"]
+      test:
+        [
+          "CMD-SHELL",
+          "celery inspect ping -A superset.tasks.celery_app:app -d celery@$$HOSTNAME"
+        ]
 
   superset-worker-beat:
     image: *superset-image
     container_name: superset_worker_beat
-    command: ["/app/docker/docker-bootstrap.sh", "beat"]
+    command: [ "/app/docker/docker-bootstrap.sh", "beat" ]
     env_file: docker/.env-non-dev
     restart: unless-stopped
     depends_on: *superset-depends-on
@@ -86,6 +98,15 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+
+  mssql:
+    image: "mcr.microsoft.com/mssql/server"
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: "Your_password123"
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
 
 volumes:
   superset_home:
