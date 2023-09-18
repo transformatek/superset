@@ -121,3 +121,5 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+FAB_API_SWAGGER_UI = True   
