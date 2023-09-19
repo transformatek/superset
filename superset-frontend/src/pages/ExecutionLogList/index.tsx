@@ -23,15 +23,15 @@ import React, { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ListView from 'src/components/ListView';
 import { Tooltip } from 'src/components/Tooltip';
-import SubMenu from 'src/views/components/SubMenu';
+import SubMenu from 'src/features/home/SubMenu';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import { fDuration } from 'src/utils/dates';
-import AlertStatusIcon from 'src/views/CRUD/alert/components/AlertStatusIcon';
+import AlertStatusIcon from 'src/features/alerts/components/AlertStatusIcon';
 import {
   useListViewResource,
   useSingleViewResource,
 } from 'src/views/CRUD/hooks';
-import { AlertObject, LogObject } from 'src/views/CRUD/alert/types';
+import { AlertObject, LogObject } from 'src/features/alerts/types';
 
 const PAGE_SIZE = 25;
 
@@ -56,7 +56,11 @@ interface ExecutionLogProps {
   isReportEnabled: boolean;
 }
 
-function ExecutionLog({ addDangerToast, isReportEnabled }: ExecutionLogProps) {
+function ExecutionLog({
+  addDangerToast,
+  addSuccessToast,
+  isReportEnabled,
+}: ExecutionLogProps) {
   const { alertId }: any = useParams();
   const {
     state: { loading, resourceCount: logCount, resourceCollection: logs },
@@ -191,6 +195,9 @@ function ExecutionLog({ addDangerToast, isReportEnabled }: ExecutionLogProps) {
         fetchData={fetchData}
         initialSort={initialSort}
         loading={loading}
+        addDangerToast={addDangerToast}
+        addSuccessToast={addSuccessToast}
+        refreshData={() => {}}
         pageSize={PAGE_SIZE}
       />
     </>

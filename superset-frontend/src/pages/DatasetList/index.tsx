@@ -16,21 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { SupersetClient, t, styled } from '@superset-ui/core';
+import {
+  isFeatureEnabled,
+  FeatureFlag,
+  getExtensionsRegistry,
+  styled,
+  SupersetClient,
+  t,
+} from '@superset-ui/core';
 import React, {
   FunctionComponent,
   useState,
   useMemo,
   useCallback,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import rison from 'rison';
 import {
   createFetchRelated,
   createFetchDistinct,
   createErrorHandler,
 } from 'src/views/CRUD/utils';
-import { ColumnObject } from 'src/views/CRUD/data/dataset/types';
+import { ColumnObject } from 'src/features/datasets/types';
 import { useListViewResource } from 'src/views/CRUD/hooks';
 import ConfirmStatusChange from 'src/components/ConfirmStatusChange';
 import { DatasourceModal } from 'src/components/Datasource';
@@ -42,10 +49,7 @@ import ListView, {
   FilterOperator,
 } from 'src/components/ListView';
 import Loading from 'src/components/Loading';
-import SubMenu, {
-  SubMenuProps,
-  ButtonProps,
-} from 'src/views/components/SubMenu';
+import SubMenu, { SubMenuProps, ButtonProps } from 'src/features/home/SubMenu';
 import Owner from 'src/types/Owner';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import { Tooltip } from 'src/components/Tooltip';
@@ -54,7 +58,6 @@ import FacePile from 'src/components/FacePile';
 import CertifiedBadge from 'src/components/CertifiedBadge';
 import InfoTooltip from 'src/components/InfoTooltip';
 import ImportModelsModal from 'src/components/ImportModal/index';
-import { isFeatureEnabled, FeatureFlag } from 'src/featureFlags';
 import WarningIconWithTooltip from 'src/components/WarningIconWithTooltip';
 import { isUserAdmin } from 'src/dashboard/util/permissionUtils';
 import { GenericLink } from 'src/components/GenericLink/GenericLink';
@@ -64,8 +67,14 @@ import {
   SORT_BY,
   PASSWORDS_NEEDED_MESSAGE,
   CONFIRM_OVERWRITE_MESSAGE,
-} from 'src/views/CRUD/data/dataset/constants';
-import DuplicateDatasetModal from 'src/views/CRUD/data/dataset/DuplicateDatasetModal';
+} from 'src/features/datasets/constants';
+import DuplicateDatasetModal from 'src/features/datasets/DuplicateDatasetModal';
+import { useSelector } from 'react-redux';
+
+const extensionsRegistry = getExtensionsRegistry();
+const DatasetDeleteRelatedExtension = extensionsRegistry.get(
+  'dataset.delete.related',
+);
 
 const FlexRowContainer = styled.div`
   align-items: center;
@@ -101,7 +110,6 @@ const Actions = styled.div`
 
 type Dataset = {
   changed_by_name: string;
-  changed_by_url: string;
   changed_by: string;
   changed_on_delta_humanized: string;
   database: {
@@ -173,6 +181,11 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
     sshTunnelPrivateKeyPasswordFields,
     setSSHTunnelPrivateKeyPasswordFields,
   ] = useState<string[]>([]);
+
+  const PREVENT_UNSAFE_DEFAULT_URLS_ON_DATASET = useSelector<any, boolean>(
+    state =>
+      state.common?.conf?.PREVENT_UNSAFE_DEFAULT_URLS_ON_DATASET || false,
+  );
 
   const openDatasetImportModal = () => {
     showImportModal(true);
@@ -302,11 +315,20 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
             },
           },
         }: any) => {
-          const titleLink = (
-            // exploreUrl can be a link to Explore or an external link
-            // in the first case use SPA routing, else use HTML anchor
-            <GenericLink to={exploreURL}>{datasetTitle}</GenericLink>
-          );
+          let titleLink: JSX.Element;
+          if (PREVENT_UNSAFE_DEFAULT_URLS_ON_DATASET) {
+            titleLink = (
+              <Link data-test="internal-link" to={exploreURL}>
+                {datasetTitle}
+              </Link>
+            );
+          } else {
+            titleLink = (
+              // exploreUrl can be a link to Explore or an external link
+              // in the first case use SPA routing, else use HTML anchor
+              <GenericLink to={exploreURL}>{datasetTitle}</GenericLink>
+            );
+          }
           try {
             const parsedExtra = JSON.parse(extra);
             return (
@@ -500,6 +522,13 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
   const filterTypes: Filters = useMemo(
     () => [
       {
+        Header: t('Search'),
+        key: 'search',
+        id: 'table_name',
+        input: 'search',
+        operator: FilterOperator.contains,
+      },
+      {
         Header: t('Owner'),
         key: 'owner',
         id: 'owners',
@@ -575,13 +604,6 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
           { label: t('Yes'), value: true },
           { label: t('No'), value: false },
         ],
-      },
-      {
-        Header: t('Search'),
-        key: 'search',
-        id: 'table_name',
-        input: 'search',
-        operator: FilterOperator.contains,
       },
     ],
     [user],
@@ -710,12 +732,23 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
       <SubMenu {...menuData} />
       {datasetCurrentlyDeleting && (
         <DeleteModal
-          description={t(
-            'The dataset %s is linked to %s charts that appear on %s dashboards. Are you sure you want to continue? Deleting the dataset will break those objects.',
-            datasetCurrentlyDeleting.table_name,
-            datasetCurrentlyDeleting.chart_count,
-            datasetCurrentlyDeleting.dashboard_count,
-          )}
+          description={
+            <>
+              <p>
+                {t(
+                  'The dataset %s is linked to %s charts that appear on %s dashboards. Are you sure you want to continue? Deleting the dataset will break those objects.',
+                  datasetCurrentlyDeleting.table_name,
+                  datasetCurrentlyDeleting.chart_count,
+                  datasetCurrentlyDeleting.dashboard_count,
+                )}
+              </p>
+              {DatasetDeleteRelatedExtension && (
+                <DatasetDeleteRelatedExtension
+                  dataset={datasetCurrentlyDeleting}
+                />
+              )}
+            </>
+          }
           onConfirm={() => {
             if (datasetCurrentlyDeleting) {
               handleDatasetDelete(datasetCurrentlyDeleting);
@@ -778,6 +811,9 @@ const DatasetList: FunctionComponent<DatasetListProps> = ({
               bulkActions={bulkActions}
               bulkSelectEnabled={bulkSelectEnabled}
               disableBulkSelect={toggleBulkSelect}
+              addDangerToast={addDangerToast}
+              addSuccessToast={addSuccessToast}
+              refreshData={refreshData}
               renderBulkSelectCopy={selected => {
                 const { virtualCount, physicalCount } = selected.reduce(
                   (acc, e) => {

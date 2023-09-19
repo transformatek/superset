@@ -59,7 +59,11 @@ import { DashboardContextForExplore } from 'src/types/DashboardContextForExplore
 import shortid from 'shortid';
 import { RootState } from '../types';
 import { getActiveFilters } from '../util/activeDashboardFilters';
-import { filterCardPopoverStyle, headerStyles } from '../styles';
+import {
+  chartContextMenuStyles,
+  filterCardPopoverStyle,
+  headerStyles,
+} from '../styles';
 
 export const DashboardPageIdContext = React.createContext('');
 
@@ -163,6 +167,11 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   const readyToRender = Boolean(dashboard && charts);
   const { dashboard_title, css, metadata, id = 0 } = dashboard || {};
 
+  // Filter sets depend on native filters
+  const filterSetEnabled =
+    isFeatureEnabled(FeatureFlag.DASHBOARD_NATIVE_FILTERS_SET) &&
+    isFeatureEnabled(FeatureFlag.DASHBOARD_NATIVE_FILTERS);
+
   useEffect(() => {
     // mark tab id as redundant when user closes browser tab - a new id will be
     // generated next time user opens a dashboard and the old one won't be reused
@@ -212,7 +221,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
       if (readyToRender) {
         if (!isDashboardHydrated.current) {
           isDashboardHydrated.current = true;
-          if (isFeatureEnabled(FeatureFlag.DASHBOARD_NATIVE_FILTERS_SET)) {
+          if (filterSetEnabled) {
             // only initialize filterset once
             dispatch(getFilterSets(id));
           }
@@ -275,11 +284,17 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   }, [addDangerToast, datasets, datasetsApiError, dispatch]);
 
   if (error) throw error; // caught in error boundary
-  if (!readyToRender) return <Loading />;
+  if (!readyToRender || !isDashboardHydrated.current) return <Loading />;
 
   return (
     <>
-      <Global styles={[filterCardPopoverStyle(theme), headerStyles(theme)]} />
+      <Global
+        styles={[
+          filterCardPopoverStyle(theme),
+          headerStyles(theme),
+          chartContextMenuStyles(theme),
+        ]}
+      />
       <DashboardPageIdContext.Provider value={dashboardPageId}>
         <DashboardContainer />
       </DashboardPageIdContext.Provider>

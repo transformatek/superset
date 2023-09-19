@@ -23,7 +23,7 @@ import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import { act } from 'react-dom/test-utils';
 import configureStore from 'redux-mock-store';
-import * as featureFlags from 'src/featureFlags';
+import * as uiCore from '@superset-ui/core';
 import Welcome from 'src/pages/Home';
 import { ReactWrapper } from 'enzyme';
 import waitForComponentToPaint from 'spec/helpers/waitForComponentToPaint';
@@ -40,7 +40,7 @@ const chartFavoriteStatusEndpoint = 'glob:*/api/v1/chart/favorite_status?*';
 const dashboardsEndpoint = 'glob:*/api/v1/dashboard/?*';
 const dashboardInfoEndpoint = 'glob:*/api/v1/dashboard/_info?*';
 const dashboardFavoriteStatusEndpoint =
-  'glob:*/api/v1/dashboard/favorite_status?*';
+  'glob:*/api/v1/dashboard/favorite_status/?*';
 const savedQueryEndpoint = 'glob:*/api/v1/saved_query/?*';
 const savedQueryInfoEndpoint = 'glob:*/api/v1/saved_query/_info?*';
 const recentActivityEndpoint = 'glob:*/api/v1/log/recent_activity/*';
@@ -109,7 +109,7 @@ const mockedProps = {
     isAnonymous: false,
     permissions: {},
     roles: {
-      sql_lab: [],
+      sql_lab: [['can_read', 'SavedQuery']],
     },
   },
 };
@@ -211,7 +211,7 @@ describe('Welcome page with toggle switch', () => {
 
   beforeAll(async () => {
     isFeatureEnabledMock = jest
-      .spyOn(featureFlags, 'isFeatureEnabled')
+      .spyOn(uiCore, 'isFeatureEnabled')
       .mockReturnValue(true);
     await act(async () => {
       wrapper = await mountAndWait();

@@ -27,9 +27,9 @@ import { render, screen, cleanup, waitFor } from 'spec/helpers/testing-library';
 import userEvent from '@testing-library/user-event';
 import { QueryParamProvider } from 'use-query-params';
 import { act } from 'react-dom/test-utils';
-import * as featureFlags from 'src/featureFlags';
+import * as uiCore from '@superset-ui/core';
 import SavedQueryList from 'src/pages/SavedQueryList';
-import SubMenu from 'src/views/components/SubMenu';
+import SubMenu from 'src/features/home/SubMenu';
 import ListView from 'src/components/ListView';
 import Filters from 'src/components/ListView/Filters';
 import ActionsBar from 'src/components/ListView/ActionsBar';
@@ -261,7 +261,7 @@ describe('RTL', () => {
   let isFeatureEnabledMock;
   beforeEach(async () => {
     isFeatureEnabledMock = jest
-      .spyOn(featureFlags, 'isFeatureEnabled')
+      .spyOn(uiCore, 'isFeatureEnabled')
       .mockImplementation(() => true);
     await renderAndWait();
   });
