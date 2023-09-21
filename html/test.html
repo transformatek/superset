@@ -1,0 +1,26 @@
+<html>
+
+<header>
+
+    <script src="https://unpkg.com/@superset-ui/embedded-sdk"></script>
+</header>
+</html>
+<body>
+    
+<div id="my-superset-container" style="height:2000px;width:1000px"></div>
+    
+    <script>
+        supersetEmbeddedSdk.embedDashboard({
+            id: "7aedf740-8099-4b03-9cde-f39f4efa6885", // given by the Superset embedding UI
+            supersetDomain: "http://localhost:8088",
+            mountPoint: document.getElementById("my-superset-container"), // any html element that can contain an iframe
+            fetchGuestToken: () => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImZpcnN0X25hbWUiOiJNYW5hZ2VyIiwibGFzdF9uYW1lIjoiTWFuYWdlciIsInVzZXJuYW1lIjoiTWFuYWdlciJ9LCJyZXNvdXJjZXMiOlt7InR5cGUiOiJkYXNoYm9hcmQiLCJpZCI6IjdhZWRmNzQwLTgwOTktNGIwMy05Y2RlLWYzOWY0ZWZhNjg4NSJ9XSwicmxzX3J1bGVzIjpbXSwiaWF0IjoxNjk1MzA3MjcwLjg3NTk5LCJleHAiOjE2OTUzMDc1NzAuODc1OTksImF1ZCI6Imh0dHA6Ly9zdXBlcnNldDo4MDg4LyIsInR5cGUiOiJndWVzdCJ9.1fr9FPvOa8WfVHLg2d4UMdEGmrY3SY7nqAs9-XwQAkg",
+            dashboardUiConfig: { // dashboard UI config: hideTitle, hideTab, hideChartControls, filters.visible, filters.expanded (optional)
+                hideTitle: true,
+                filters: {
+                    expanded: true,
+                }
+            },  });
+        </script>
+
+</body>
