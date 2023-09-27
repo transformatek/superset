@@ -106,6 +106,8 @@ services:
 
   mssql:
     image: "mcr.microsoft.com/mssql/server"
+    container_name: superset_mssql
+    user: root
     ports:
       - "1434:1433"
       # - "1433:1433"
@@ -113,8 +115,13 @@ services:
       MSSQL_SA_PASSWORD: "Your_password123"
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
+    volumes:
+      - db_mssql:/var/opt/mssql/data
+
 
 volumes:
+  db_mssql:
+    external: false
   superset_home:
     external: false
   db_home:

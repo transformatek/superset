@@ -119,6 +119,8 @@ services:
       MSSQL_SA_PASSWORD: "Your_password123"
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
+#!ADD VOLUME TO THE DATABASE
+
 
 volumes:
   superset_home:

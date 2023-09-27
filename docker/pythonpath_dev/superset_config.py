@@ -107,6 +107,14 @@ CORS_OPTIONS = {
   'resources':['*'],
   'origins': ['http://localhost:8088', 'http://localhost:8888']
 }
+
+# Dashboard embedding
+GUEST_ROLE_NAME = "Gamma"
+GUEST_TOKEN_JWT_SECRET = "test-guest-secret-change-me"
+GUEST_TOKEN_JWT_ALGO = "HS256"
+GUEST_TOKEN_HEADER_NAME = "X-GuestToken"
+GUEST_TOKEN_JWT_EXP_SECONDS = 300  # 5 minutes
+
 #
 # Optionally import superset_config_docker.py (which will have been included on
 # the PYTHONPATH) in order to allow for local settings to be overridden
