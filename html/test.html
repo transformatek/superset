@@ -3,24 +3,47 @@
 <header>
 
     <script src="https://unpkg.com/@superset-ui/embedded-sdk"></script>
+    <style>
+        div {
+            height: 100%;
+            width: 100%;
+            background-color: powderblue;
+        }
+    </style>
 </header>
-</html>
+
 <body>
-    
-<div id="my-superset-container" style="height:2000px;width:1000px"></div>
-    
+
+    <div id="my-superset-container"></div>
+
     <script>
-        supersetEmbeddedSdk.embedDashboard({
-            id: "7aedf740-8099-4b03-9cde-f39f4efa6885", // given by the Superset embedding UI
+        const myDashboard = supersetEmbeddedSdk.embedDashboard({
+            id: "d730fd32-0352-4dee-a162-59d041e54827", // given by the Superset embedding UI
             supersetDomain: "http://localhost:8088",
             mountPoint: document.getElementById("my-superset-container"), // any html element that can contain an iframe
-            fetchGuestToken: () => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImZpcnN0X25hbWUiOiJNYW5hZ2VyIiwibGFzdF9uYW1lIjoiTWFuYWdlciIsInVzZXJuYW1lIjoiTWFuYWdlciJ9LCJyZXNvdXJjZXMiOlt7InR5cGUiOiJkYXNoYm9hcmQiLCJpZCI6IjdhZWRmNzQwLTgwOTktNGIwMy05Y2RlLWYzOWY0ZWZhNjg4NSJ9XSwicmxzX3J1bGVzIjpbXSwiaWF0IjoxNjk1MzA3MjcwLjg3NTk5LCJleHAiOjE2OTUzMDc1NzAuODc1OTksImF1ZCI6Imh0dHA6Ly9zdXBlcnNldDo4MDg4LyIsInR5cGUiOiJndWVzdCJ9.1fr9FPvOa8WfVHLg2d4UMdEGmrY3SY7nqAs9-XwQAkg",
+            fetchGuestToken: () => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImZpcnN0X25hbWUiOiJNYW5hZ2VyIiwibGFzdF9uYW1lIjoiTWFuYWdlciIsInVzZXJuYW1lIjoiTWFuYWdlciJ9LCJyZXNvdXJjZXMiOlt7ImlkIjoiZDczMGZkMzItMDM1Mi00ZGVlLWExNjItNTlkMDQxZTU0ODI3IiwidHlwZSI6ImRhc2hib2FyZCJ9XSwicmxzX3J1bGVzIjpbXSwiaWF0IjoxNjk2MTg0MTM2LjEzMzIzNiwiZXhwIjoxNjk2MTg0NDM2LjEzMzIzNiwiYXVkIjoiaHR0cDovL3N1cGVyc2V0OjgwODgvIiwidHlwZSI6Imd1ZXN0In0.FRCspimHSUpB_8rDDngPr_0xzssgWQSCTIp9VHapijE",
             dashboardUiConfig: { // dashboard UI config: hideTitle, hideTab, hideChartControls, filters.visible, filters.expanded (optional)
-                hideTitle: true,
+                hideTitle: false,
+                hideTab: false,
+                hideChartControls: false,
                 filters: {
-                    expanded: true,
-                }
-            },  });
-        </script>
+                    expanded: false,
+                },
+                debug: true
+            },
+        });
+
+        setInterval(async () => {
+            const { width, height } = myDashboard.getScrollSize(); // function that returns the value
+            setCss(` // imaginary setCSS function. Replace with  whatever method of styling is standard in your application.
+        .embedded-superset iframe {
+            width: ${width};
+            height: ${height};
+        }
+	`);
+        }, 1000);
+    </script>
 
 </body>
+
+</html>
