@@ -91,30 +91,37 @@ class CeleryConfig:
 
 
 CELERY_CONFIG = CeleryConfig
-SESSION_COOKIE_SAMESITE = None
-ENABLE_PROXY_FIX = True
-PUBLIC_ROLE_LIKE_GAMMA = True
-FEATURE_FLAGS = {"ALERT_REPORTS": True,"EMBEDDED_SUPERSET": True}
-ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
-WEBDRIVER_BASEURL = "http://superset:8088/"
-# The base URL for the email report hyperlinks.
-WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 
 SQLLAB_CTAS_NO_LIMIT = True
-CORS_OPTIONS = {
-  'supports_credentials': True,
-  'allow_headers': ['*'],
-  'resources':['*'],
-  'origins': ['http://localhost:8088', 'http://localhost:8888']
-}
 
 # Dashboard embedding
-GUEST_ROLE_NAME = "Gamma"
+GUEST_ROLE_NAME = "Public"
 GUEST_TOKEN_JWT_SECRET = "test-guest-secret-change-me"
 GUEST_TOKEN_JWT_ALGO = "HS256"
 GUEST_TOKEN_HEADER_NAME = "X-GuestToken"
-GUEST_TOKEN_JWT_EXP_SECONDS = 300  # 5 minutes
+GUEST_TOKEN__EXP_SECONDS = 999999999999999999  # 5 minutes
 
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False
+WTF_CSRF_ENABLED = False
+CSRF_ENABLED = False
+
+SESSION_COOKIE_SAMESITE = None
+ENABLE_PROXY_FIX = True
+PUBLIC_ROLE_LIKE_GAMMA = True
+FEATURE_FLAGS = {"ALERT_REPORTS": True, "EMBEDDED_SUPERSET": True}
+ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
+WEBDRIVER_BASEURL = "http://localhost:8088/"
+# The base URL for the email report hyperlinks.
+WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
+OVERRIDE_HTTP_HEADERS = {"X-Frame-Options": "ALLOWALL"}
+CORS_OPTIONS = {
+    "supports_credentials": True,
+    "allow_headers": ["*"],
+    "resources": ["*"],
+    "origins": ["http://localhost:8088", "http://localhost:8888"],
+}
+TALISMAN_ENABLED = False
 #
 # Optionally import superset_config_docker.py (which will have been included on
 # the PYTHONPATH) in order to allow for local settings to be overridden
@@ -130,5 +137,4 @@ except ImportError:
     logger.info("Using default Docker config...")
 
 
-
-FAB_API_SWAGGER_UI = True   
+FAB_API_SWAGGER_UI = True

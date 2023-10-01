@@ -190,7 +190,30 @@ Understanding the Superset Points of View
 
 ## Useful links
 - https://medium.com/@khushbu.adav/embedding-superset-dashboards-in-your-react-application-7f282e3dbd88
+- https://medium.com/@huamichaelchen/end-to-end-example-of-setting-up-superset-embedded-dashboard-f72fc985559
 - https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/
 - https://superset.apache.org/docs/databases/sql-server
 - https://github.com/pymssql/pymssql
 
+https://github.com/ra002890/superset-embedded-example/tree/init
+
+
+
+## Important
+
+**leave allowed domains EMPTY**
+
+Just to help others having the same problme with guest access, the Public role must have these permissions:
+
+* can read on Chart
+* can read on Dataset
+* can read on Dashboard
+* can read on Database
+* can dashboard on Superset
+* can explore json on Superset
+* all database access on all_database_access
+
+Without these permissions I was not able to open Dashboard using embedded-sdk!
+
+- [https://www.tetranyde.com/blog/embedding-superset](https://www.tetranyde.com/blog/embedding-superset)
+- [https://stackoverflow.com/questions/75207112/superset-ui-embedded-sdk-embedding-dashboard-returns-403-forbidden ](https://stackoverflow.com/questions/75207112/superset-ui-embedded-sdk-embedding-dashboard-returns-403-forbidden)

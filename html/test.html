@@ -9,6 +9,12 @@
             width: 100%;
             background-color: powderblue;
         }
+        iframe {
+            height: 100%;
+            width: 100%;
+            border: none;
+        }
+    </style>
     </style>
 </header>
 
@@ -17,11 +23,11 @@
     <div id="my-superset-container"></div>
 
     <script>
-        const myDashboard = supersetEmbeddedSdk.embedDashboard({
-            id: "d730fd32-0352-4dee-a162-59d041e54827", // given by the Superset embedding UI
+        supersetEmbeddedSdk.embedDashboard({
+            id: "382a6032-5ff3-4201-a360-0f1caef7a4b9", // given by the Superset embedding UI
             supersetDomain: "http://localhost:8088",
             mountPoint: document.getElementById("my-superset-container"), // any html element that can contain an iframe
-            fetchGuestToken: () => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImZpcnN0X25hbWUiOiJNYW5hZ2VyIiwibGFzdF9uYW1lIjoiTWFuYWdlciIsInVzZXJuYW1lIjoiTWFuYWdlciJ9LCJyZXNvdXJjZXMiOlt7ImlkIjoiZDczMGZkMzItMDM1Mi00ZGVlLWExNjItNTlkMDQxZTU0ODI3IiwidHlwZSI6ImRhc2hib2FyZCJ9XSwicmxzX3J1bGVzIjpbXSwiaWF0IjoxNjk2MTg0MTM2LjEzMzIzNiwiZXhwIjoxNjk2MTg0NDM2LjEzMzIzNiwiYXVkIjoiaHR0cDovL3N1cGVyc2V0OjgwODgvIiwidHlwZSI6Imd1ZXN0In0.FRCspimHSUpB_8rDDngPr_0xzssgWQSCTIp9VHapijE",
+            fetchGuestToken: () => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Imxhc3RfbmFtZSI6Im1hbmFnZXIiLCJmaXJzdF9uYW1lIjoibWFuYWdlciIsInVzZXJuYW1lIjoibWFuYWdlciJ9LCJyZXNvdXJjZXMiOlt7InR5cGUiOiJkYXNoYm9hcmQiLCJpZCI6IjM4MmE2MDMyLTVmZjMtNDIwMS1hMzYwLTBmMWNhZWY3YTRiOSJ9XSwicmxzX3J1bGVzIjpbXSwiaWF0IjoxNjk2MjAwNTc2LjI1MTgzOTYsImV4cCI6MTY5NjIwMDg3Ni4yNTE4Mzk2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODgvIiwidHlwZSI6Imd1ZXN0In0.8RNuDByKGvCO_nBtz5PyLA79qKlEYZ0CeFaEAEVEOWU",
             dashboardUiConfig: { // dashboard UI config: hideTitle, hideTab, hideChartControls, filters.visible, filters.expanded (optional)
                 hideTitle: false,
                 hideTab: false,
@@ -33,15 +39,6 @@
             },
         });
 
-        setInterval(async () => {
-            const { width, height } = myDashboard.getScrollSize(); // function that returns the value
-            setCss(` // imaginary setCSS function. Replace with  whatever method of styling is standard in your application.
-        .embedded-superset iframe {
-            width: ${width};
-            height: ${height};
-        }
-	`);
-        }, 1000);
     </script>
 
 </body>
