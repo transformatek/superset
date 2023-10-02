@@ -119,10 +119,14 @@ services:
       MSSQL_SA_PASSWORD: "Your_password123"
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
+    volumes:
+      - db_mssql:/var/opt/mssql/data
 #!ADD VOLUME TO THE DATABASE
 
 
 volumes:
+  db_mssql:
+    external: false
   superset_home:
     external: false
   db_home:
