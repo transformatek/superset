@@ -50,6 +50,22 @@
 - Should Work 
 - If you get 401 error `GET http://localhost:8088/api/v1/me/roles/ UNAUTHORIZED` -> Refresh the ***Guest token**
 
+
+## to restart
+
+```bash
+cd pojetss/superset-ttk
+docker-compose -f docker-compose-non-dev.yml down
+docker volume rm superset-ttk_db_home superset-ttk_redis superset-ttk_db_mssql superset-ttk_superset_home
+docker-compose -f docker-compose-non-dev.yml up --build
+```
+
+CTRL-C
+
+```bash
+docker-compose -f docker-compose-non-dev.yml up --build
+```
+
 ## Useful links
 Installation 
 - [https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/](https://superset.apache.org/docs/installation/installing-superset-using-docker-compose/)
